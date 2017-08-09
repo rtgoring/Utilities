@@ -1,5 +1,4 @@
 import os
-import cv2
 
 directory = 'test'
 
@@ -14,7 +13,6 @@ maxLen = 0
 for image in images:
     if len(image) > maxLen:
         maxLen = len(image)
-
 
 counter = 0
 for image in images:
