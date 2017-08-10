@@ -7,6 +7,8 @@ import os
 from os import listdir, getcwd
 from os.path import join
 #TODO add -thresh 0.2
+
+CPP =True
 '''
 This script takes all of the annotations that were created, and copies them,
 and their linked image to the proper location in yolo, as well as
@@ -29,7 +31,7 @@ CFGFile = 'yolo-voc.2.0-transdec'
 #RoboSub Pool
 parentPath = '/home/goring/Documents/DataSets/Sub/'#ERAUPool/' #Transdec/'
 EXTENSION='.jpeg'
-datasetName ='SemiFinals1'
+datasetName ='InItToWinIt2'
 #classes = sorted(['gate','path','buoy'])
 #classes = sorted(['binBannana', 'binCan', 'binLightning', 'binOrange', 'gate', 'invgate', 'greenbuoy', 'path', 'redbuoy', 'torpedoBoard', 'yellowbuoy']) #5 Robosub pool Demo
 classes = sorted(['gate','redbuoy','greenbuoy','yellowbuoy','path','gateinv'])
@@ -272,7 +274,10 @@ try:
 except: #Can't easily make two levels deep at once, could use string split though
     print "Can't open Names trainingScriptWriter"
 
-trainingScriptWriter.write("../darknet detector train " +datasetName+'.data ' +datasetName+'.cfg' +  " ../darknet19_448.conv.23")
+if CPP:
+    trainingScriptWriter.write("../darknet-cpp detector train " +datasetName+'.data ' +datasetName+'.cfg' +  " ../darknet19_448.conv.23")
+else:
+    trainingScriptWriter.write("../darknet detector train " +datasetName+'.data ' +datasetName+'.cfg' +  " ../darknet19_448.conv.23")
 trainingScriptWriter.close()
 
 #Makes script executable
@@ -288,7 +293,10 @@ try:
     demoScriptWriter = open(os.path.join(datasetName,datasetName+'_demo.sh'), 'w')
 except: #Can't easily make two levels deep at once, could use string split though
     print "Can't open demoScriptWriter"
-demoScriptWriter.write("../darknet detector demo " + datasetName + ".data " + datasetName + ".cfg " +  "Models/" + datasetName+"_900.weights ../aaa.mp4\n")
+if CPP:
+    demoScriptWriter.write("../darknet-cpp detector demo " + datasetName + ".data " + datasetName + ".cfg " +  "Models/" + datasetName+"_900.weights ../aaa.mp4\n")
+else:
+    demoScriptWriter.write("../darknet detector demo " + datasetName + ".data " + datasetName + ".cfg " +  "Models/" + datasetName+"_900.weights ../aaa.mp4\n")
 demoScriptWriter.close()
 
 #Makes script executable
