@@ -1,10 +1,7 @@
 import shutil
-import os
 import xml.etree.ElementTree as ET
-import pickle
 import os
-from os import listdir, getcwd
-from os.path import join
+from os import, getcwd
 
 ####################
 ## Global Parameters
@@ -45,7 +42,7 @@ print "%s Classes. Using Model: %s" % (str(len(classes)), CFGModel + '-' + str(l
 classCounter = [0] * len(classes)  # Counts num Annots per class
 cls_tracker = [''] * len(classes)  # Verifies ClS IDs are in same order of classes
 foundClasses = []  # Contains classes found in XML files
-ignoredClasses = []  # Contains classes foun in XML file that are not trained
+ignoredClasses = []  # Contains classes found in XML file that are not trained
 
 
 def convert(size, box):
