@@ -99,7 +99,7 @@ def copyLabels():
     """
     Copies the data/names folder
 
-    Inorder to print text to image, individual leters are loaded. These are hard pathed to /data/labels.
+    Inorder to print text to image, individual letters are loaded. These are hard paths to /data/labels.
     Therefor, it is required to move them to the local directory.
     """
 
@@ -177,8 +177,8 @@ def createMetaDataFile():
 
 
 def createDemoScriptFile():
-    #TODO Fix default weight for script
-    #TODO Fix default video for script
+    # TODO Fix default weight for script
+    # TODO Fix default video for script
     """
     Create a Script to Run a Demo
 
@@ -212,7 +212,7 @@ def createDemoScriptFile():
 
 
 def createTrainScriptFile():
-    #TODO Configureable training weights param
+    # TODO Configurable training weights param
     """
     Create a Script to train model
 
@@ -286,8 +286,6 @@ def createNamesFile():
 
 def main():
     pass
-
-
 
 
 if __name__ == '__main__':
@@ -382,7 +380,7 @@ if __name__ == '__main__':
                     shutil.copy(annotationFileNamePath, annotationFileNamePathFinal)
                     copiedAnnotations = copiedAnnotations + 1
                 except:
-                    print "failed coppying annotation" + annotationFileNamePath + " to: " + annotationFileNamePathFinal
+                    print "failed copying annotation" + annotationFileNamePath + " to: " + annotationFileNamePathFinal
 
                 # Move Images
                 JPEGImagesFileNamePathFinal = os.path.join(finalParent, "JPEGImages")

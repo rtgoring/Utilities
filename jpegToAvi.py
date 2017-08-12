@@ -1,20 +1,22 @@
+import Tkinter
 import numpy as np
-import Tkinter, tkFileDialog
-import cv2
 import os
 import sys
+import tkFileDialog
+
+import cv2
 
 """
 Global Editable Parameters
 """
-FPS = 15 # Ajusts playback speed
-outputExt = '.avi' # .MP4 also works
+FPS = 15  # Adjusts playback speed
+outputExt = '.avi'  # .MP4 also works
 imageFileTypes = ('jpg', 'jpeg')
 directoriesToExclude = ('Annotations', 'annotations')
 
-#Tkinter Initialize
+# Tkinter Initialize
 root = Tkinter.Tk()
-root.withdraw() #Hide Window
+root.withdraw()  # Hide Window
 
 
 def getResolution(imagePath):
@@ -45,9 +47,9 @@ def getCodex():
     Returns:
         - int of cv2 FOURCC type
     """
-    if os.name == 'posix': # OSX or Linux
+    if os.name == 'posix':  # OSX or Linux
         return cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
-    elif os.name == 'nt': # Windows
+    elif os.name == 'nt':  # Windows
         return cv2.cv.CV_FOURCC(*'XVID')
 
 
@@ -63,16 +65,17 @@ def main():
         folderCount = 0
         imageCount = 0
         for f in os.listdir(inputDirectory):
-            if os.path.isdir(os.path.join(inputDirectory, f)) and f not in directoriesToExclude: # Makes array of directories
+            if os.path.isdir(
+                    os.path.join(inputDirectory, f)) and f not in directoriesToExclude:  # Makes array of directories
                 parentDirectories.append(os.path.join(inputDirectory, f))
     else:
         print "Not a valid path.\nExiting."
         sys.exit()
 
-    if len(parentDirectories) == 0: ## No subfolders found, use only input directory
+    if len(parentDirectories) == 0:  ## No subfolders found, use only input directory
         parentDirectories.append(inputDirectory)
 
-	fourcc = getCodex()
+        fourcc = getCodex()
 
     # Directories with images
     globalCounter = 0
@@ -81,25 +84,25 @@ def main():
         localCounter = 1
         globalCounter = globalCounter + 1
 
-        print "\n\nReading: " + str(pD) +"\n"
+        print "\n\nReading: " + str(pD) + "\n"
 
         # Gets all image names in Directory
         for f in os.listdir(pD):
-            if f.endswith(imageFileTypes): # Checks file type
+            if f.endswith(imageFileTypes):  # Checks file type
                 allImages.append(os.path.join(pD, f))
 
-        if len(allImages) > 0: # If images are found
+        if len(allImages) > 0:  # If images are found
             imageResolution = getResolution(os.path.join(inputDirectory, allImages[0]))
             print "saving to: " + os.path.join(inputDirectory, pD) + outputExt
             out = cv2.VideoWriter(os.path.join(inputDirectory, pD) + outputExt, fourcc, FPS, imageResolution)
         else:
             print "No Images found.\nSkipping Directory."
-            continue # Exit current loop
+            continue  # Exit current loop
 
-		# Sorts all Images
+        # Sorts all Images
         allImages.sort(key=lambda f: int(filter(str.isdigit, f)))
 
-		# Once all images are sorted read through them and write them to file
+        # Once all images are sorted read through them and write them to file
         for image in allImages:
             frame = cv2.imread(os.path.join(inputDirectory, image))
             try:
