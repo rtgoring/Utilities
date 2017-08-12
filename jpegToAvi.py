@@ -21,10 +21,10 @@ root.withdraw() #Hide Window
 def getResolution(imagePath):
     """ Returns Resolution of an image
     Args:
-	imagePath: A File path to load
+		- imagePath: A File path to load
     Returns:
-	- A tuple of width and height
-	- None if no image is loaded
+		- A tuple of width and height
+		- None if no image is loaded
     """
     sampleImage = cv2.imread(imagePath)
     if len(sampleImage):
@@ -42,9 +42,9 @@ def getCodex():
     You may wish to edit or change depending on needs
     
     Args:
-	None
+		- None
     Returns:
-	int of cv2 FOURCC type
+		- int of cv2 FOURCC type
     """
     if os.name =='posix': # OSX or Linux
         return cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
@@ -80,7 +80,7 @@ def main():
     for pD in parentDirectories:
         allImages = []
         localCounter = 1
-        globalCounter = globalCounter+1
+        globalCounter = globalCounter + 1
 
         print "\n\nReading: " + str(pD) +"\n"
         
@@ -90,17 +90,17 @@ def main():
                 allImages.append(os.path.join(pD, f))
         
         if len(allImages) > 0: # If images are found
-	    imageResolution = getResolution(os.path.join(inputDirectory, allImages[0]))
-	    print "saving to: " + os.path.join(inputDirectory, pD) + outputExt
+	    	imageResolution = getResolution(os.path.join(inputDirectory, allImages[0]))
+	    	print "saving to: " + os.path.join(inputDirectory, pD) + outputExt
             out = cv2.VideoWriter(os.path.join(inputDirectory, pD) + outputExt, fourcc, FPS, imageResolution)
         else:
             print "No Images found.\nSkipping Directory."
-            continue # Exit current 'for' loop
+            continue # Exit current loop
 
         # Sorts all Images
         allImages.sort(key=lambda f: int(filter(str.isdigit, f)))
 	
-	# Once all images are sorted read through them and write them to file
+		# Once all images are sorted read through them and write them to file
         for image in allImages:
             frame = cv2.imread(os.path.join(inputDirectory,image))
             try:
@@ -108,7 +108,7 @@ def main():
             except:
                 print "Can't Write"
             print ("%d/%d: %d of %d") % (globalCounter, len(parentDirectories), localCounter, len(allImages))
-            localCounter = localCounter+1
+            localCounter = localCounter + 1
 
 
 if __name__ == '__main__':
