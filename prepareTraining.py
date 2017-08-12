@@ -1,48 +1,20 @@
+import os
 import shutil
 import xml.etree.ElementTree as ET
-import os
-from os import, getcwd
+from os import getcwd
 
-####################
-## Global Parameters
-####################
+# ###################
+# Global Parameters
+# ###################
 CPP = True
-
-"""
-This script takes all of the annotations that were created, and copies them,
-and their linked image to the proper location in yolo, as well as
-creating the labels file
-"""
-
-# detector.C 133 - How often to save snapshots
-
-'''
-#RoboSub TransDec
-parentPath = '/home/goring/Documents/DataSets/Sub/2015/Transdec/'
-EXTENSION='.jpeg'
-datasetName ='robosubTransdec2015'
-classes = ['gate','redbuoy','greenbuoy','yellowbuoy','gateinv','path'] #5 Robosub pool Demo
-#classes = ['buoys','gate','gateinv','path','dropper'] #5 Robosub pool Demo
-CFGFile = 'yolo-voc.2.0-transdec'
-#CFGFile = 'tiny-yolo-voc-sub-pool'
-'''
-
-# RoboSub Pool
-parentPath = '/home/goring/Documents/DataSets/Sub/2017/Forward/'  # ERAUPool/' #Transdec/'
+parentPath = '/home/goring/Documents/DataSets/Sub/2017/Forward/'
 EXTENSION = '.jpeg'
 datasetName = 'Testing2'
-# classes = sorted(['gate','path','buoy'])
-# classes = sorted(['binBannana', 'binCan', 'binLightning', 'binOrange', 'gate', 'invgate', 'greenbuoy', 'path', 'redbuoy', 'torpedoBoard', 'yellowbuoy']) #5 Robosub pool Demo
 classes = sorted(['gate', 'redbuoy', 'greenbuoy', 'yellowbuoy', 'path', 'gateinv'])
-CFGModel = 'tiny-yolo-voc'  # 'yolo-voc.2.0'#'tiny-yolo-voc'
-CFGFile = os.path.join("cfg", CFGModel, CFGModel + '-' + str(len(classes)) + '.cfg')
-print datasetName
-print classes
-print "%s Classes. Using Model: %s" % (str(len(classes)), CFGModel + '-' + str(len(classes)) + '.cfg')
-classCounter = [0] * len(classes)  # Counts num Annots per class
-cls_tracker = [''] * len(classes)  # Verifies ClS IDs are in same order of classes
-foundClasses = []  # Contains classes found in XML files
-ignoredClasses = []  # Contains classes found in XML file that are not trained
+CFGModel = 'tiny-yolo-voc'  # 'yolo-voc.2.0' # 'tiny-yolo-voc'
+
+
+# detector.C 133 - How often to save snapshots
 
 
 def convert(size, box):
@@ -102,13 +74,13 @@ def convert_annotation(year, image_id):
     return localAnnotations
 
 
-def convertXMLToLabels(sets):
+def convertXMLToLabels():
     """
        Converts XML files to Labels
        Returns
           - Number of objects that were annotated
     """
-    annotatedItems = 0
+    annotatedItemsLocal = 0
     for year, image_set in sets:
         if not os.path.exists('devkit/%s/labels/' % (year)):
             os.makedirs('devkit/%s/labels/' % (year))
@@ -117,12 +89,13 @@ def convertXMLToLabels(sets):
         for image_id in image_ids:
             list_file.write('%s/devkit/%s/JPEGImages/%s%s\n' % (wd, year, image_id, EXTENSION))
             # print ('%s/devkit/%s/JPEGImages/%s%s\n'%(wd, year, image_id,EXTENSION))
-            annotatedItems = annotatedItems + convert_annotation(year, image_id)
+            annotatedItemsLocal = annotatedItemsLocal + convert_annotation(year, image_id)
 
         list_file.close()
-        return annotatedItems
+        return annotatedItemsLocal
 
-def copyLabels(wd, datasetName):
+
+def copyLabels():
     """
     Copies the data/names folder
 
@@ -137,7 +110,32 @@ def copyLabels(wd, datasetName):
     return True
 
 
-def createMetaDataFile(totalAnnotations, annotatedItems):
+def createDirectories(requiredDirectories):
+    """
+    Creates Directories in list
+    :param requiredDirectories:
+    :return:
+    """
+    for directory in requiredDirectories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+
+def copyCFGFile():
+    """
+    Copies and Renames CFG Files
+    :return:
+    """
+    try:
+        shutil.copy(CFGFile, datasetName)
+        os.rename(os.path.join(datasetName, CFGModel + '-' + str(len(classes)) + '.cfg'),
+                  os.path.join(datasetName, datasetName + '.cfg'))
+        return True
+    except:
+        return False
+
+
+def createMetaDataFile():
     """
     Creates a txt file with metadata
 
@@ -166,8 +164,8 @@ def createMetaDataFile(totalAnnotations, annotatedItems):
     metaDataWriter.write(''.join(str(e) + ', ' for e in classCounter)[:-2] + "\n\n")
     metaDataWriter.write("There are " + str(totalAnnotations) + " Annotated Images\n\n")
     metaDataWriter.write("There are " + str(annotatedItems) + " Annotated Items\n\n")
-    metaDataWriter.write("There are " + str(coppiedAnnotations) + " Coppied Annotations\n\n")
-    metaDataWriter.write("There are " + str(coppiedImages) + " Coppied Images\n\n")
+    metaDataWriter.write("There are " + str(copiedAnnotations) + " Copied Annotations\n\n")
+    metaDataWriter.write("There are " + str(copiedImages) + " Copied Images\n\n")
     metaDataWriter.write("Training Script\n")
     metaDataWriter.write(
         "../darknet detector train " + datasetName + '.data ' + datasetName + '.cfg' + " ../darknet19_448.conv.23\n\n")
@@ -241,6 +239,7 @@ def createTrainScriptFile():
     os.chmod(os.path.join(datasetName, datasetName + '_train.sh'), 0755)
     return True
 
+
 def createDataFile():
     """
     Creates required .data file
@@ -292,10 +291,27 @@ def main():
 
 
 if __name__ == '__main__':
-    parentFolders = []  #
+    # ###################
+    # This script takes all of the annotations that were created, and copies them,
+    # and their linked image to the proper location in yolo, as well as
+    # creating the labels file
+    # ###################
+
+    CFGFile = os.path.join("cfg", CFGModel, CFGModel + '-' + str(len(classes)) + '.cfg')
+    print "Preparing to train %s Classes.\nUsing Model: %s" % (
+        str(len(classes)), CFGModel + '-' + str(len(classes)) + '.cfg')
+    print "Dataset: " + datasetName
+    print "Trained Classes: "
+    print classes
+    print "\n\n"
+    classCounter = [0] * len(classes)  # Counts num Annots per class
+    cls_tracker = [''] * len(classes)  # Verifies ClS IDs are in same order of classes
+    foundClasses = []  # Contains classes found in XML files
+    ignoredClasses = []  # Contains classes found in XML file that are not trained
+    parentFolders = []
     totalAnnotations = 0  # Number of Annotations Files Found
-    coppiedAnnotations = 0  # Number of Annotations coppied to working directory
-    coppiedImages = 0  # Number of Images Coppied to working directory
+    copiedAnnotations = 0  # Number of Annotations copied to working directory
+    copiedImages = 0  # Number of Images copied to working directory
 
     wd = getcwd()
     sets = [(datasetName, 'train')]
@@ -303,61 +319,59 @@ if __name__ == '__main__':
     finalDestination = wd + '/devkit/' + sets[0][0] + '/Annotations'
     trainValLocation = wd + '/devkit/' + sets[0][0] + '/ImageSets/Main'
 
-    """
-    Creates Required Directories
-    TODO upgrade to function that can be given a path and creates all inbetween
-    """
-    neededDirectories = [datasetName,
-                         finalParent,
-                         datasetName + '/' + 'Models',
-                         finalParent + '/ImageSets',
-                         finalParent + '/JPEGImages',
-                         trainValLocation,
-                         finalDestination]
+    requiredDirectories = [
+        trainValLocation,
+        finalDestination,
+        datasetName,
+        finalParent,
+        datasetName + '/Models',
+        finalParent + '/ImageSets',
+        finalParent + '/JPEGImages'
+    ]
 
-    for directory in neededDirectories:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+    createDirectories(requiredDirectories)
 
-    '''
-    Creates List of Folders containing images
-    '''
+    # Creates List of Folders containing images
     for f in os.listdir(parentPath):
-        if ('.') not in f and f != 'Annotations' and f != 'Useless':  # Removes files
+        if ('.') not in f and f != 'Annotations' and f != 'Useless':  # Removes files and unwanted folders
             parentFolders.append(f)
             parentFolders = sorted(parentFolders)
 
-    '''
-    Creates file listing training set of Filenames 
+    # ###################
+    # Creates file listing training set of file names
+    #
+    # Assuming Structure:
+    # -parentPath
+    #    -Data1
+    #       -ImageN.jpg
+    #       -Annotations
+    #       -Annotation.xml
+    #
+    # Goes through each folder in the parent path, and looks inside the internal Annotation folder.
+    # Saves the names of each of the annotations, which indicate the used images.
+    # Copy the annotation and image to devkit
+    #
+    # Purpose is to reduce the need of having all images in the dataset in the training set
+    # ###################
 
-    Assuming Structure:
-    -parentPath
-       -Data1
-          -ImageN.jpg
-          -Annotations
-          -Annotation.xml
-
-    Goes through each folder in the parent path, and looks inside the internal Annotation folder.
-    Saves the names of each of the annoations, which indicate the used images.
-    Copy the annotation and image to devkit
-
-    Purpose is to reduce the need of having all images in the dataset in the training set
-    '''
     try:
         fileWriter = open(os.path.join(trainValLocation, 'train.txt'), 'w')
-    except:  # Can't easily make two levels deep at once, could use string split though
+    except:
         print "Can't open fileWriter"
 
-    # For each folder within root
+    # For each folder within root - this is where everything happens
+    print "Copying. This may take a moment."
     for f in parentFolders:
-        # print '\nSearching: ' + f + "\n"
         try:
             for fileName in os.listdir(os.path.join(parentPath, f, 'Annotations')):  # Go through each annotation
-                fileWriter.write(fileName[:-4] + "\n")  # filename with no extension
+                # Write filename with no extension
+                fileWriter.write(fileName[:-4] + "\n")
 
+                # Prepare Annotation File Paths
                 annotationFileName = fileName
                 annotationFileNamePath = os.path.join(parentPath, f, 'Annotations', annotationFileName)
 
+                # Prepare Image File Paths
                 JPEGImagesFileName = fileName[:-4] + EXTENSION  # strips off .xml adds .jpg/.jpeg
                 JPEGImagesFileNamePath = os.path.join(parentPath, f, JPEGImagesFileName)
 
@@ -366,7 +380,7 @@ if __name__ == '__main__':
                 annotationFileNamePathFinal = os.path.join(finalParent, "Annotations")
                 try:
                     shutil.copy(annotationFileNamePath, annotationFileNamePathFinal)
-                    coppiedAnnotations = coppiedAnnotations + 1
+                    copiedAnnotations = copiedAnnotations + 1
                 except:
                     print "failed coppying annotation" + annotationFileNamePath + " to: " + annotationFileNamePathFinal
 
@@ -375,26 +389,20 @@ if __name__ == '__main__':
                 # print "Moving: " + JPEGImagesFileNamePath + " to: " + JPEGImagesFileNamePathFinal
                 try:
                     shutil.copy(JPEGImagesFileNamePath, JPEGImagesFileNamePathFinal)
-                    coppiedImages = coppiedImages + 1
+                    copiedImages = copiedImages + 1
                 except:
                     print "failed copying JPEGImages" + JPEGImagesFileNamePath + " to: " + JPEGImagesFileNamePathFinal
                 totalAnnotations = totalAnnotations + 1
 
         except:
-            print 'No Annotation file in ' + parentPath + f
+            pass
+            # print 'No Annotation file in ' + parentPath + f
     fileWriter.close()
 
-    '''
-    Copies and renames CFG Files
-    '''
-    shutil.copy(CFGFile, datasetName)
-    os.rename(os.path.join(datasetName, CFGModel + '-' + str(len(classes)) + '.cfg'),
-              os.path.join(datasetName, datasetName + '.cfg'))
-
-
-    copyLabels(wd, datasetName)
-    annotatedItems = convertXMLToLabels(sets)
-    createMetaDataFile(totalAnnotations, annotatedItems)
+    copyCFGFile()
+    copyLabels()
+    annotatedItems = convertXMLToLabels()
+    createMetaDataFile()
     createDemoScriptFile()
     createTrainScriptFile()
     createDataFile()
