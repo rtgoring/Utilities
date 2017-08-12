@@ -21,10 +21,10 @@ root.withdraw() #Hide Window
 def getResolution(imagePath):
     """ Returns Resolution of an image
     Args:
-		imagePath: A File path to load
+	imagePath: A File path to load
     Returns:
-		- A tuple of width and height
-		- None if no image is loaded
+	- A tuple of width and height
+	- None if no image is loaded
     """
     sampleImage = cv2.imread(imagePath)
     if len(sampleImage):
@@ -32,7 +32,7 @@ def getResolution(imagePath):
         width = np.size(sampleImage, 1)
         return (width, height)
     else:
-		return None
+	return None
 
 
 def getCodex():
@@ -42,9 +42,9 @@ def getCodex():
     You may wish to edit or change depending on needs
     
     Args:
-		None
+	None
     Returns:
-		int of cv2 FOURCC type
+	int of cv2 FOURCC type
     """
     if os.name =='posix': # OSX or Linux
         return cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
