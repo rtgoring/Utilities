@@ -75,7 +75,7 @@ def main():
     if len(parentDirectories) == 0:  ## No subfolders found, use only input directory
         parentDirectories.append(inputDirectory)
 
-        fourcc = getCodex()
+    fourcc = getCodex()
 
     # Directories with images
     globalCounter = 0
