@@ -31,7 +31,7 @@ This script will do this :)
 '''
 
 """
-Usage set directory as the path to the folder containing the images to be renamed.
+Usage set DATA_DIRECTORY as the path to the folder containing the images to be renamed.
 
 """
 

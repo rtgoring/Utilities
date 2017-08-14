@@ -1,15 +1,16 @@
 import os
+from os import getcwd
 import shutil
 import xml.etree.ElementTree as ET
-from os import getcwd
 
 # ###################
 # Global Parameters
 # ###################
-CPP = True
-parentPath = '/home/goring/Documents/DataSets/Sub/2017/Forward/'
+CPP = False
+parentPath = '/home/goring/Documents/DataSets/Sub/2017/skynet/'
+darknetPath = '/home/goring/Documents/alex/darknet'
 EXTENSION = '.jpeg'
-datasetName = 'Testing2'
+datasetName = 'skynet1'
 classes = sorted(['gate', 'redbuoy', 'greenbuoy', 'yellowbuoy', 'path', 'gateinv'])
 CFGModel = 'tiny-yolo-voc'  # 'yolo-voc.2.0' # 'tiny-yolo-voc'
 
@@ -100,7 +101,7 @@ def copyLabels():
     Copies the data/names folder
 
     Inorder to print text to image, individual letters are loaded. These are hard paths to /data/labels.
-    Therefor, it is required to move them to the local directory.
+    Therefor, it is required to move them to the local DATA_DIRECTORY.
     """
 
     try:
@@ -284,10 +285,6 @@ def createNamesFile():
     return True
 
 
-def main():
-    pass
-
-
 if __name__ == '__main__':
     # ###################
     # This script takes all of the annotations that were created, and copies them,
@@ -308,10 +305,11 @@ if __name__ == '__main__':
     ignoredClasses = []  # Contains classes found in XML file that are not trained
     parentFolders = []
     totalAnnotations = 0  # Number of Annotations Files Found
-    copiedAnnotations = 0  # Number of Annotations copied to working directory
-    copiedImages = 0  # Number of Images copied to working directory
+    copiedAnnotations = 0  # Number of Annotations copied to working DATA_DIRECTORY
+    copiedImages = 0  # Number of Images copied to working DATA_DIRECTORY
 
     wd = getcwd()
+    # wd = darknetPath # Not been tested yet #TODO Test this
     sets = [(datasetName, 'train')]
     finalParent = wd + '/devkit/' + sets[0][0]
     finalDestination = wd + '/devkit/' + sets[0][0] + '/Annotations'

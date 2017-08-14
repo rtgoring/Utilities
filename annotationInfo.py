@@ -3,19 +3,19 @@ import os
 import xml.etree.ElementTree as ET
 
 
-def parse_annotation(path, file):
+def parse_annotation(path, filename):
     """
     Function to parse XML files and return dict
       :return: Dictionary containing content counters of XMLFile
     """
 
     localdict = {}
-    in_file = open(path + '/' + file)
+    in_file = open(path + '/' + filename)
     tree = ET.parse(in_file)
     root = tree.getroot()
 
     localdict['filePath'] = path
-    localdict['fileName'] = file
+    localdict['fileName'] = filename
 
     for obj in root.iter('object'):
         cls = obj.find('name').text
@@ -37,8 +37,8 @@ if __name__ == "__main__":
     # Editable Params
     # ###############
 
-    directory = '/home/goring/Documents/DataSets/Sub/2017/Forward'
-    CSVFILENAME = directory.split('/')[-1]  # last folder in directory path, could be anything
+    DATA_DIRECTORY = '/home/goring/Documents/DataSets/Sub/2017/skynet'
+    OUTPUT_CSV_DIRECTORY = DATA_DIRECTORY.split('/')[-1]  # last folder in DATA_DIRECTORY path, could be anything
 
     allClasses = []  # Global to keep track of all annotated classes
     dictArray = []  # Global to keep all returned dicts - Contains entry for each XML file
@@ -47,24 +47,23 @@ if __name__ == "__main__":
     allImages = 0  # Global to keep track of number of annotated image - One XML file for each image
 
     # Get listing of all annotation directories
-    if os.path.isdir(directory):
-        dirToAnnots = []  # Directories that contain annotations
-        for a in os.listdir(directory):
-            annotationDir = os.path.join(directory, a, 'Annotations')
+    if os.path.isdir(DATA_DIRECTORY):
+        annotations = []  # Directories that contain annotations
+        for a in os.listdir(DATA_DIRECTORY):
+            annotationDir = os.path.join(DATA_DIRECTORY, a, 'Annotations')
             if os.path.isdir(annotationDir):  # Ensures folder exits
-                dirToAnnots.append(annotationDir)
+                annotations.append(annotationDir)
 
     # Creates Dict for each annotation
-    for b in dirToAnnots:  # For each folder
+    for b in annotations:  # For each folder
         for c in os.listdir(b):  # For each annotation
             retDict = parse_annotation(b, c)
             dictArray.append(retDict)
 
     # Creates Dict for each Folder
-    for dTA in dirToAnnots:  # For each folder
-        folderDict = {}
-        folderDict['filePath'] = dTA
-        folderDict['Annotated Images'] = len(os.listdir(dTA))
+    for dTA in annotations:  # For each folder
+        folderDict = {'filePath': dTA, 'Annotated Images': len(os.listdir(dTA))}
+
         allImages = allImages + len(os.listdir(dTA))
 
         # Initializes counter for each key
@@ -77,7 +76,7 @@ if __name__ == "__main__":
         for dA in dictArray:  # For each dict
 
             for dAA in dA:  # For each entry in dict
-                if dAA in allClasses and dA['filePath'] == dTA:  # If current class and directory
+                if dAA in allClasses and dA['filePath'] == dTA:  # If current class and DATA_DIRECTORY
                     folderDict[dAA] = folderDict[dAA] + 1  # Increment counters
                     folderDict['Total Annotations'] = folderDict['Total Annotations'] + 1
         folderDicts.append(folderDict)
@@ -98,7 +97,7 @@ if __name__ == "__main__":
     folderDicts.append(lastRowSummary)
 
     # Write to CSV file
-    with open(CSVFILENAME + '.csv', 'w') as csvfile:
+    with open(OUTPUT_CSV_DIRECTORY + '.csv', 'w') as csvfile:
 
         # Organize headers in correct order
         rowheaders = ['filePath']
@@ -108,8 +107,8 @@ if __name__ == "__main__":
         rowheaders.append('Total Annotations')
         rowheaders.append('Annotated Images')
 
-        filewriter = csv.DictWriter(csvfile, fieldnames=rowheaders)
-        filewriter.writeheader()
+        file_writer = csv.DictWriter(csvfile, fieldnames=rowheaders)
+        file_writer.writeheader()
 
         for row in folderDicts:
-            filewriter.writerow(row)
+            file_writer.writerow(row)
