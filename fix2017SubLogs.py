@@ -50,7 +50,6 @@ if __name__ == '__main__':
         if len(image) > maxLen:
             maxLen = len(image)
 
-    counter = 0
     for image in images:
         withoutExt = image.split('.')
         newImageName = withoutExt[0].ljust(maxLen - len(withoutExt[1]) - 1, '0') + '.' + withoutExt[1]
