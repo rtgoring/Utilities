@@ -44,7 +44,7 @@ for f in os.listdir(VOCDirectory):
         VOCAnnotations.append(f)
 
 for f in VOCAnnotations:
-    fTXT = f.split('.')[0] + '.txt'
+    fTXT = f.split('.')[0] + '.txt'  # xml -> txt
     in_file = open(os.path.join(VOCDirectory, f))
     out_file = open(os.path.join(KITTIDirectory, fTXT), 'w')
     tree = ET.parse(in_file)
