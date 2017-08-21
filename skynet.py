@@ -14,8 +14,8 @@ sock = socket.socket(socket.AF_INET,  # Internet
 sock.bind((UDP_IP, UDP_PORT))
 sock.setblocking(1)
 
-DATA_DIRECTORY = '/home/goring/Documents/DataSets/Sub/2017/skynet'
-DARKNET_DIRECTORY = '/home/goring/Documents/alex/darknet/InItToWinIt2'
+DATA_DIRECTORY = '/home/goring/Documents/DataSets/Sub/2017/skynet2'
+DARKNET_DIRECTORY = '/home/goring/Documents/alex/darknet/skynet1'
 
 if os.path.isdir(DATA_DIRECTORY):
     videoFiles = []
@@ -46,13 +46,13 @@ for videoFileName in videoFiles:
         images.sort(key=lambda f: int(filter(str.isdigit, f)))
         previousFrame = None
 
-        command = '../darknet detector demo InItToWinIt2.data InItToWinIt2.cfg Models2/InItToWinIt2_40000.weights ' + videoFileName + '\n'
-        command2 = '/home/goring/Documents/alex/darknet/InItToWinIt2/skynet.sh'
+        command = '../darknet detector demo skynet1.data skynet1.cfg Models/skynet1_14000.weights ' + videoFileName + '\n'
+        command2 = '/home/goring/Documents/alex/darknet/skynet1/skynet.sh'
 
         # Inorder to change dirs and run script in one command had to do sh script... & probably would have worked..
         fileWriter = open(os.path.join(DARKNET_DIRECTORY, 'skynet' + '.sh'), 'w')
         fileWriter.write('#!/bin/bash\n')
-        fileWriter.write("cd '/home/goring/Documents/alex/darknet/InItToWinIt2/'\n")
+        fileWriter.write("cd '/home/goring/Documents/alex/darknet/skynet1/'\n")
         fileWriter.write(command + "\n")
         fileWriter.close()
         os.chmod(os.path.join(DARKNET_DIRECTORY, 'skynet' + '.sh'), 0755)
