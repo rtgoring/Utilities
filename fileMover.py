@@ -7,19 +7,20 @@ Moves objects from parent folder
 to location specified in text folder
 """
 
-parentFolder = '/home/goring/Documents/alex/darknet/devkit/skynet4'
-textFileName = 'trainImages.txt'
+parentFolder = '/home/goring/Documents/alex/darknet/devkit/skynet5'
+text_files = ['train_annot.txt', 'train_image.txt', 'valid_annot.txt', 'valid_image.txt']
 
-destinationFolder = os.path.join(parentFolder, textFileName.split('.')[0])
 
-try:
-    os.mkdir(destinationFolder)
-except:
-    pass  # Already there
+for textFileName in text_files:
+    destinationFolder = os.path.join(parentFolder, textFileName.split('.')[0])
 
-file = open(os.path.join(parentFolder, textFileName), 'r')
+    try:
+        os.mkdir(destinationFolder)
+    except:
+        pass  # Already there
+    file_opener = open(os.path.join(parentFolder, textFileName), 'r')
 
-for line in file:
-    print line
-    line = line.split('\n')[0]
-    shutil.copy(line, os.path.join(parentFolder, destinationFolder))
+    for line in file_opener:
+        print line
+        line = line.split('\n')[0]
+        shutil.copy(line, os.path.join(parentFolder, destinationFolder))
