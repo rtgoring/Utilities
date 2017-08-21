@@ -30,7 +30,7 @@ import os
 import xml.etree.ElementTree as ET
 
 parentDirectory = '/home/goring/Documents/DataSets/Sub/2017/DIGITS/2015TransdecData/'
-parentDirectory = '/home/goring/Documents/alex/darknet/devkit/skynet4'
+parentDirectory = '/home/goring/Documents/alex/darknet/devkit/skynet5'
 VOCDirectory = os.path.join(parentDirectory, 'Annotations')
 KITTIDirectory = os.path.join(parentDirectory, 'KITTIAnnotations')
 try:
@@ -42,7 +42,7 @@ VOCAnnotations = []
 for f in os.listdir(VOCDirectory):
     if f.endswith('.xml'):  # Checks file type
         VOCAnnotations.append(f)
-progress = 0
+progress = 1
 
 for f in VOCAnnotations:
     fTXT = f.split('.')[0] + '.txt'  # xml -> txt

@@ -7,11 +7,11 @@ import xml.etree.ElementTree as ET
 # Global Parameters
 # ###################
 CPP = False
-parentPath = '/home/goring/Documents/DataSets/Sub/2017/skynet/'
+parentPath = '/home/goring/Documents/DataSets/Sub/2017/Forward/'
 darknetPath = '/home/goring/Documents/alex/darknet'
 EXTENSION = '.jpeg'
-datasetName = 'skynet1'
-classes = sorted(['gate', 'redbuoy', 'greenbuoy', 'yellowbuoy', 'path', 'gateinv'])
+datasetName = 'skynet5'
+classes = sorted(['gate', 'redbuoy', 'yellowbuoy', 'greenbuoy', 'path', 'gateinv'])
 CFGModel = 'tiny-yolo-voc'  # 'yolo-voc.2.0' # 'tiny-yolo-voc'
 
 
@@ -308,8 +308,9 @@ if __name__ == '__main__':
     copiedAnnotations = 0  # Number of Annotations copied to working DATA_DIRECTORY
     copiedImages = 0  # Number of Images copied to working DATA_DIRECTORY
 
-    wd = getcwd()
-    # wd = darknetPath # Not been tested yet #TODO Test this
+    #wd = getcwd()
+    wd = darknetPath # Not been tested yet #TODO Test this
+    os.chdir(darketPath) #TODO Test th is too
     sets = [(datasetName, 'train')]
     finalParent = wd + '/devkit/' + sets[0][0]
     finalDestination = wd + '/devkit/' + sets[0][0] + '/Annotations'
@@ -382,7 +383,7 @@ if __name__ == '__main__':
 
                 # Move Images
                 JPEGImagesFileNamePathFinal = os.path.join(finalParent, "JPEGImages")
-                # print "Moving: " + JPEGImagesFileNamePath + " to: " + JPEGImagesFileNamePathFinal
+                #print "Moving: " + JPEGImagesFileNamePath + " to: " + JPEGImagesFileNamePathFinal
                 try:
                     shutil.copy(JPEGImagesFileNamePath, JPEGImagesFileNamePathFinal)
                     copiedImages = copiedImages + 1
