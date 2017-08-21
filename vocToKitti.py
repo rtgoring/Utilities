@@ -29,8 +29,8 @@ https://github.com/umautobots/vod-converter
 import os
 import xml.etree.ElementTree as ET
 
-parentDirectory = '/home/goring/Documents/DataSets/Sub/2017/Forward/2015TransdecData/'
-
+parentDirectory = '/home/goring/Documents/DataSets/Sub/2017/DIGITS/2015TransdecData/'
+parentDirectory = '/home/goring/Documents/alex/darknet/devkit/skynet4'
 VOCDirectory = os.path.join(parentDirectory, 'Annotations')
 KITTIDirectory = os.path.join(parentDirectory, 'KITTIAnnotations')
 try:
@@ -42,6 +42,7 @@ VOCAnnotations = []
 for f in os.listdir(VOCDirectory):
     if f.endswith('.xml'):  # Checks file type
         VOCAnnotations.append(f)
+progress = 0
 
 for f in VOCAnnotations:
     fTXT = f.split('.')[0] + '.txt'  # xml -> txt
@@ -49,11 +50,21 @@ for f in VOCAnnotations:
     out_file = open(os.path.join(KITTIDirectory, fTXT), 'w')
     tree = ET.parse(in_file)
     root = tree.getroot()
+    c = 0
+
     for obj in root.iter('object'):
         cls = obj.find('name').text
+
         xmlbox = obj.find('bndbox')
         b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text),
              float(xmlbox.find('ymax').text))  # left, right, top, bottom
+
+        if c > 0:
+            out_file.write("\n")
         out_file.write(
-            "%s 0 0 0 %d %d %d %d 0 0 0 0 0 0 0\n" % (cls, b[0], b[2], b[1], b[3]))  # left, top, right, bottom
+            "%s 0 0 0 %d %d %d %d 0 0 0 0 0 0 0" % (cls, b[0], b[2], b[1], b[3]))  # left, top, right, bottom
+        c = c + 1
+    print "%d/%d" % (progress, len(VOCAnnotations))
+    print "%d/%d" % (progress, len(VOCAnnotations))
+    progress = progress + 1
 print "Done. %d Converted." % len(VOCAnnotations)
