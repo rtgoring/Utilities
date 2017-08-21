@@ -35,14 +35,24 @@ Usage set DATA_DIRECTORY as the path to the folder containing the images to be r
 
 """
 
-if __name__ == '__main__':
-    directory = 'test'
+directory_path = '/home/goring/Documents/DataSets/Sub/2017/Forward'
+parent_directories = []
 
+if os.path.isdir(directory_path):
+    for f in os.listdir(directory_path):
+        if os.path.isdir(os.path.join(directory_path, f)):
+            parent_directories.append(os.path.join(directory_path, f))
+
+parent_directories.sort(key=lambda f: int(filter(str.isdigit, f)))
+directory_counter = 0
+
+for directory in parent_directories:
     if os.path.isdir(directory):
         images = []
         for a in os.listdir(directory):
             if a != 'Annotations':
                 images.append(a)
+
     images.sort(key=lambda f: int(filter(str.isdigit, f)))
 
     maxLen = 0
@@ -52,6 +62,15 @@ if __name__ == '__main__':
 
     for image in images:
         withoutExt = image.split('.')
-        newImageName = withoutExt[0].ljust(maxLen - len(withoutExt[1]) - 1, '0') + '.' + withoutExt[1]
+        newImageName = str(directory_counter).zfill(2) + withoutExt[0].ljust(maxLen - len(withoutExt[1]) - 1, '0') + '.' + withoutExt[1]
         print image + " --> " + newImageName
+        annotation = withoutExt[0] + '.xml'
+        newAnnotationName = str(directory_counter).zfill(2) + withoutExt[0].ljust(maxLen - len(withoutExt[1]) - 1, '0') + '.xml'
+        print annotation + "  --> " + newAnnotationName
+
         os.rename(os.path.join(directory, image), os.path.join(directory, newImageName))
+
+        if os.path.isfile(os.path.join(directory, 'Annotations', annotation)):
+            os.rename(os.path.join(directory,'Annotations', annotation), os.path.join(directory, 'Annotations', newAnnotationName))
+    directory_counter = directory_counter + 1
+print "DONE!"
