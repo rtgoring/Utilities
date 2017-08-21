@@ -310,7 +310,7 @@ if __name__ == '__main__':
 
     #wd = getcwd()
     wd = darknetPath # Not been tested yet #TODO Test this
-    os.chdir(darketPath) #TODO Test th is too
+    os.chdir(darknetPath) #TODO Test th is too
     sets = [(datasetName, 'train')]
     finalParent = wd + '/devkit/' + sets[0][0]
     finalDestination = wd + '/devkit/' + sets[0][0] + '/Annotations'
