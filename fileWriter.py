@@ -6,12 +6,11 @@ import math
 Replaces find "$(pwd)" >> ../output.txt 
 """
 
-target_directory = '/home/goring/Documents/alex/darknet/devkit/skynet4/Annotations'
-destination_file_name = 'output.txt'
-target_file_type = '.xml'
+target_directory = '/home/goring/Documents/alex/darknet/devkit/skynet5/KITTIAnnotations'
+target_file_type = '.txt'
 FULL_PATH = 1
 WRITE_FILE_EXTENSION = 1
-VALIDATION_RATIO = .25  # 25% Validation 75% training
+VALIDATION_RATIO = .15 # 25% Validation 75% training
 
 local_files = []
 train_set = []
@@ -46,25 +45,41 @@ for f in local_files:
         else:
             valid_set.append(f)
 
+upTarget = target_directory[:-len(target_directory.split('/')[-1])]
+
 if len(valid_set):  # If no valid, don't make empty file
-    file_writer_valid = open(os.path.join(os.path.join(target_directory, '..'), 'validation.txt'), 'w')
+    file_writer_valid_annot = open(os.path.join(os.path.join(target_directory, '..'), 'valid_annot.txt'), 'w')
+    file_writer_valid_image = open(os.path.join(os.path.join(target_directory, '..'), 'valid_image.txt'), 'w')
+
     for f in valid_set:
         if not WRITE_FILE_EXTENSION:
             f = f.split('.')[0]  # Remove Extension
 
-        output_string = "%s\n" % (os.path.join(target_directory, f))
-        file_writer_valid.write(output_string)
+        output_string_annot = "%s\n" % (os.path.join(target_directory, f))
+        file_writer_valid_annot.write(output_string_annot)
 
-    file_writer_valid.close()
+        output_string_image = "%s\n" % (os.path.join(upTarget, 'JPEGImages', f.split('.')[0]+'.jpeg'))
+        file_writer_valid_image.write(output_string_image)
 
-file_writer_train = open(os.path.join(os.path.join(target_directory, '..'), 'train.txt'), 'w')
+    file_writer_valid_annot.close()
+    file_writer_valid_image.close()
+
+
+file_writer_train_annot = open(os.path.join(os.path.join(target_directory, '..'), 'train_annot.txt'), 'w')
+file_writer_train_image = open(os.path.join(os.path.join(target_directory, '..'), 'train_image.txt'), 'w')
+
 for f in train_set:
     if not WRITE_FILE_EXTENSION:
         f = f.split('.')[0]  # Remove Extension
 
-    output_string = "%s\n" % (os.path.join(target_directory, f))
-    file_writer_train.write(output_string)
-file_writer_train.close()
+    output_string_annot = "%s\n" % (os.path.join(target_directory, f))
+    file_writer_train_annot.write(output_string_annot)
+
+    output_string_image = "%s\n" % (os.path.join(upTarget, 'JPEGImages', f.split('.')[0]+'.jpeg'))
+    file_writer_train_image.write(output_string_image)
+
+file_writer_train_annot.close()
+file_writer_train_image.close()
 
 print "Full Set: %d" % (len(local_files))
 print "Train: %d - %.2f%% " % (len(train_set), float(len(train_set)) / len(local_files))
