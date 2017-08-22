@@ -1,31 +1,3 @@
-"""
-Digits uses KITTI format
-
-#Values    Name      Description
-----------------------------------------------------------------------------
-   1    type         Describes the type of object: 'Car', 'Van', 'Truck',
-                     'Pedestrian', 'Person_sitting', 'Cyclist', 'Tram',
-                     'Misc' or 'DontCare'
-   1    truncated    Float from 0 (non-truncated) to 1 (truncated), where
-                     truncated refers to the object leaving image boundaries
-   1    occluded     Integer (0,1,2,3) indicating occlusion state:
-                     0 = fully visible, 1 = partly occluded
-                     2 = largely occluded, 3 = unknown
-   1    alpha        Observation angle of object, ranging [-pi..pi]
-   4    bbox         2D bounding box of object in the image (0-based index):
-                     contains left, top, right, bottom pixel coordinates
-   3    dimensions   3D object dimensions: height, width, length (in meters)
-   3    location     3D object location x,y,z in camera coordinates (in meters)
-   1    rotation_y   Rotation ry around Y-axis in camera coordinates [-pi..pi]
-   1    score        Only for results: Float, indicating confidence in
-                     detection, needed for p/r curves, higher is better.
-
-
-Karlsruhe Institute of Technology recomends VOD-converter, but it's shit and broke. Therefor this is my even
-more broke attempt. But it works.
-https://github.com/umautobots/vod-converter
-"""
-
 import os
 import xml.etree.ElementTree as ET
 import shutil
@@ -45,57 +17,56 @@ try:
 except:
     pass  # Already there
 
-targetClass = 'gate'
-VOCAnnotations = []
+target_class = 'gate'
+voc_annotations = []
 for f in os.listdir(AnnotationDirectory):
     if f.endswith('.xml'):  # Checks file type
-        VOCAnnotations.append(f)
+        voc_annotations.append(f)
 
-annotationsToMove = []
-print "reading " + str(len(VOCAnnotations)) + " files"
-counter = 0
-totAnnots = str(len(VOCAnnotations))
-for f in VOCAnnotations:
+annotations_to_move = []
+print "reading " + str(len(voc_annotations)) + " files"
+counter = 1
+total_annotations = str(len(voc_annotations))
+for f in voc_annotations:
     in_file = open(os.path.join(AnnotationDirectory, f))
     tree = ET.parse(in_file)
     root = tree.getroot()
     for obj in root.iter('object'):
         cls = obj.find('name').text
-        if cls == targetClass:
-            annotationsToMove.append(f)
+        if cls == target_class:
+            annotations_to_move.append(f)
 
     counter = counter + 1
-    print str(counter) + "/" + totAnnots
-print "Found " + str(len(annotationsToMove)) + " instances of " + targetClass
-# shutil.copy(JPEGImagesFileNamePath, JPEGImagesFileNamePathFinal)
+    print str(counter) + "/" + total_annotations
+print "Found " + str(len(annotations_to_move)) + " instances of " + target_class
 
-counter = 0
-totAnnots = str(len(annotationsToMove))
-failedA = []
-failedI = []
+counter = 1
+total_annotations = str(len(annotations_to_move))
+failed_annotations = []
+failed_images = []
 
 out_fileImages = open(os.path.join(HomeDirectory, "trainImages.txt"), 'w')
 out_fileAnnots = open(os.path.join(HomeDirectory, "trainAnnots.txt"), 'w')
 
-for f in annotationsToMove:
+for f in annotations_to_move:
     f2 = f.split('.')[0] + '.jpeg'  # xml -> txt
     try:
-        # shutil.copy(os.path.join(AnnotationDirectory,f), os.path.join(HomeDirectory,outAnnotations,f))
+        shutil.copy(os.path.join(AnnotationDirectory,f), os.path.join(HomeDirectory,outAnnotations,f))
         out_fileImages.write("%s/%s\n" % (ImageDirectory, f2))
     except:
-        failedA.append(f)
+        failed_annotations.append(f)
     try:
         out_fileAnnots.write("%s/%s\n" % (AnnotationDirectory, f))
-        # shutil.copy(os.path.join(ImageDirectory,f2), os.path.join(HomeDirectory,outImages,f2))
+        shutil.copy(os.path.join(ImageDirectory,f2), os.path.join(HomeDirectory,outImages,f2))
     except:
-        failedI.append(f2)
+        failed_images.append(f2)
 
-    print str(counter) + "/" + totAnnots
+    print str(counter) + "/" + total_annotations
     counter = counter + 1
 print "DONE\n\n\n"
 
-for f in failedA:
+for f in failed_annotations:
     print f
 
-for f in failedI:
+for f in failed_images:
     print f
