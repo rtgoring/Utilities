@@ -30,7 +30,7 @@ import os
 import xml.etree.ElementTree as ET
 
 parentDirectory = '/home/goring/Documents/DataSets/Sub/2017/DIGITS/2015TransdecData/'
-parentDirectory = '/home/goring/Documents/alex/darknet/devkit/skynet5'
+parentDirectory = '/home/goring/Documents/alex/darknet/devkit/skynet2000'
 VOCDirectory = os.path.join(parentDirectory, 'Annotations')
 KITTIDirectory = os.path.join(parentDirectory, 'KITTIAnnotations')
 try:
@@ -62,7 +62,7 @@ for f in VOCAnnotations:
         if c > 0:
             out_file.write("\n")
         out_file.write(
-            "%s 0 0 0 %d %d %d %d 0 0 0 0 0 0 0" % (cls, b[0], b[2], b[1], b[3]))  # left, top, right, bottom
+            "%s 0 0 0 %d %d %d %d 0 0 0 0 0 0 0 0" % (cls, b[0], b[2], b[1], b[3]))  # left, top, right, bottom
         c = c + 1
     print "%d/%d" % (progress, len(VOCAnnotations))
     print "%d/%d" % (progress, len(VOCAnnotations))
