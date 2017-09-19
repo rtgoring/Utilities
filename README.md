@@ -22,25 +22,38 @@ Note: TX1's don't have RTC Batteries, so groundhog day... (Also Irrelevant to th
 ABC order for numbers though produces the following (wrong) order.
 
 1
+
 10
+
 11
+
 12
+
 2
+
 20
+
 21
+
 22
+
 
 If loading images with python, images.sort() recreates this, however
 images.sort(key=lambda f: int(filter(str.isdigit, f))) fixes it.
 
 This script renames all images by padding the left digit, which fixes the issue. I.e
 
+
 01
+
 02 
+
 10
+
 11
 
 This should be run so that the playback of the data is in the correct order. It may take a while.
+
 ### jpegToAVI
 ajadklfj
 
