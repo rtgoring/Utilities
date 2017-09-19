@@ -1,6 +1,26 @@
+"""
+Script to generate metadata about your Data Set. Generates a comma delimited csv file in the current working directory.
+Provides information about which classes have been annotated, how many annotations are found for that class, as well as
+which directory they are from.d
+"""
+
+
 import csv
 import os
 import xml.etree.ElementTree as ET
+
+# Enable or disable GUI - requires Tkinter
+FileDialogGUI = True
+
+if FileDialogGUI:
+    try:
+        import Tkinter
+        import tkFileDialog
+        # Tkinter Initialize
+        root = Tkinter.Tk()
+        root.withdraw()  # Hide Window
+    except:
+        FileDialogGUI = False
 
 
 def parse_annotation(path, filename):
@@ -37,7 +57,12 @@ if __name__ == "__main__":
     # Editable Params
     # ###############
 
-    DATA_DIRECTORY = '/home/goring/Documents/DataSets/Sub/2017/skynet'
+    if FileDialogGUI:
+        DATA_DIRECTORY = tkFileDialog.askdirectory(parent=root, initialdir=os.getcwd,
+                                title='Please select a DATA_DIRECTORY')
+    else:
+        DATA_DIRECTORY = '/home/goring/Documents/DataSets/Sub/2017/Forward'
+
     OUTPUT_CSV_DIRECTORY = DATA_DIRECTORY.split('/')[-1]  # last folder in DATA_DIRECTORY path, could be anything
 
     allClasses = []  # Global to keep track of all annotated classes
