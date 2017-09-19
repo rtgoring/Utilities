@@ -3,7 +3,7 @@ import os
 
 def main():
     """
-    Crawls through all folders in DATA_DIRECTORY and creates
+    Crawls through all folders in directory and creates
     the Annotations folder if not already present
     :return:
     """
