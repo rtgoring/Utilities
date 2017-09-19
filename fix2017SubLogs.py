@@ -1,9 +1,9 @@
 import os
 
 '''
-When 2017 images were recorded a bug was in the filenaming.
-Files were named in the format: Year|DayOfYear|Hour|Minute|Second|.JPEG (Irelevant to this issue)
-Note: TX1's don't have RTC Batteries, so groundhog day... (Also irelevant to this issue)
+When 2017 images were recorded a bug was in the file naming.
+Files were named in the format: Year|DayOfYear|Hour|Minute|Second|.JPEG (Irrelevant to this issue)
+Note: TX1's don't have RTC Batteries, so groundhog day... (Also Irrelevant to this issue)
 ABC order for numbers though produces the following (wrong) order.
 
 1
@@ -15,24 +15,22 @@ ABC order for numbers though produces the following (wrong) order.
 21
 22
 
-If loading images with python images.sort() recreates this, however
+If loading images with python, images.sort() recreates this, however
 images.sort(key=lambda f: int(filter(str.isdigit, f))) fixes it.
 
-This script renames all images by pading the left digit, which fixes the issue. I.e
+This script renames all images by padding the left digit, which fixes the issue. I.e
 
 01
 02 
 10
 11
 
-
-Note: If you rename an annotated image, rename the annotation.
-This script will do this :)
+This should be run so that the playback of the data is in the correct order. It may take a while.
 '''
 
 """
-Usage set DATA_DIRECTORY as the path to the folder containing the images to be renamed.
-
+Usage set directory_path as the path to the folder containing the images to be renamed.
+It will search for a matching annotation, and rename that as well. 
 """
 
 directory_path = '/home/goring/Documents/DataSets/Sub/2017/Forward'
@@ -72,5 +70,5 @@ for directory in parent_directories:
 
         if os.path.isfile(os.path.join(directory, 'Annotations', annotation)):
             os.rename(os.path.join(directory,'Annotations', annotation), os.path.join(directory, 'Annotations', newAnnotationName))
-    directory_counter = directory_counter + 1
+    directory_counter +=1
 print "DONE!"
