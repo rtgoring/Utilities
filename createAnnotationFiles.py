@@ -13,7 +13,6 @@ def main():
             os.mkdir(os.path.join(directory, a, "Annotations"))
         except:
             pass
-            # print 'Folder Already Made'
 
     return True
 
