@@ -1,16 +1,9 @@
-import csv
 import os
 import xml.etree.ElementTree as ET
 import sys
 import cv2
 
-
 def parse_annotation(path, filename,full_image_path):
-    """
-    Function to parse XML files and return dict
-      :return: Dictionary containing content counters of XMLFile
-    """
-
     in_file = open(path + '/' + filename)
     tree = ET.parse(in_file)
     root = tree.getroot()
@@ -21,8 +14,6 @@ def parse_annotation(path, filename,full_image_path):
         image = cv2.imread(path_to_read)
         cv2.imshow('a',image)
         
-  
-
         x=0
         for obj in root.iter('object'):
             cls = obj.find('name').text
@@ -32,7 +23,6 @@ def parse_annotation(path, filename,full_image_path):
             except:
                 pass # Already Exists
             
-            #print cls
             xmlbox = obj.find('bndbox')
             b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text),
                  float(xmlbox.find('ymax').text))
@@ -77,4 +67,3 @@ if __name__ == "__main__":
             
         else:
             print annotation + ' paired image can''t be found'
-  
