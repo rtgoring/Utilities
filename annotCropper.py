@@ -19,7 +19,6 @@ def parse_annotation(path, filename,full_image_path):
 
     try:
         image = cv2.imread(path_to_read)
-        print "loading: " + path_to_read
         cv2.imshow('a',image)
         
   
@@ -43,7 +42,7 @@ def parse_annotation(path, filename,full_image_path):
             cv2.waitKey(20)
             x+=1
     except:
-        print "couldn''t open " + path_to_read
+        print "couldn''t open " + path_to_read + " for annotation: " + path+'/'+filename
 
 
 def find_image_path(annotation):
