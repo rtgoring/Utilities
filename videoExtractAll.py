@@ -7,7 +7,6 @@ import numpy as np
 Usage: Create a folder in current director with name of parentFolder
 '''
 
-import os
 video_files = []
 fileDirectory = 'G:/home/goring/Documents/DataSets/RobotX/Hawaii/AVIs'
 for f in os.listdir(fileDirectory):
@@ -15,8 +14,6 @@ for f in os.listdir(fileDirectory):
         video_files.append( os.path.splitext(os.path.basename(f))[0])
 
 video_files = sorted(video_files)
-currentImagePos = 0
-imageNum = 0
 
 print video_files
 
