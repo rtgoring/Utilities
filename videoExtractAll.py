@@ -1,8 +1,5 @@
 import cv2
-import time
 import os
-import numpy as np
-
 '''
 Usage: Create a folder in current director with name of parentFolder
 '''
@@ -21,7 +18,7 @@ for videoFile in video_files:
     running = True
     videoExtension = '.avi'
     print videoFile
-    try: #remove spaces from vile name, if any...
+    try: #remove spaces from file name, if any...
         os.mkdir(os.path.join(fileDirectory,videoFile.replace(" ","")))
     except:
         pass
